@@ -19,23 +19,28 @@ class App extends Component {
     this.setState({ filter: e.currentTarget.value });
   };
 
-  // handleNameChange = event => {
-  //   this.setState({ name: event.target.value });
-  // };
+  getFilteredContacts = () => {
+    const { filter, contacts } = this.state;
+    const normalizedFilter = filter.toLowerCase();
 
-  // formSubmitHandler = data => {
-  //   console.log(data);
-  // };
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(normalizedFilter)
+    );
+  };
 
   render() {
+    const { contacts, filter } = this.state;
+
+    const filteredContacts = this.getFilteredContacts();
+
     return (
       <div className="App">
         <h2>Phonebook</h2>
         <ContactForm onAddContact={this.handleAddContact} />
 
         <h2>Contacts</h2>
-        <ContactsList contacts={this.state.contacts} />
-        <Filter onChange={this.changeFilter} />
+        <ContactsList contacts={filteredContacts} />
+        <Filter value={filter} onChange={this.changeFilter} />
       </div>
     );
   }
