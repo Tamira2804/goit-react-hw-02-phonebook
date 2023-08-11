@@ -35,12 +35,12 @@ class ContactForm extends Component {
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit} className="form-container">
-        <label htmlFor="nameId" className="form-label">
+      <form onSubmit={this.handleSubmit} className="Form__container">
+        <label htmlFor="nameId" className="Form__label">
           Name
         </label>
         <input
-          className="form-input"
+          className="Form__input"
           type="text"
           name="name"
           id="nameId"
@@ -51,11 +51,11 @@ class ContactForm extends Component {
           onChange={this.handleChange}
         />
 
-        <label htmlFor="numberId" className="form-label">
+        <label htmlFor="numberId" className="Form__label">
           Number
         </label>
         <input
-          className="form-input"
+          className="Form__input"
           type="tel"
           name="number"
           id="numberId"
@@ -66,7 +66,7 @@ class ContactForm extends Component {
           onChange={this.handleChange}
         />
 
-        <button type="submit" className="add-contact-button">
+        <button type="submit" className="AddContact__btn">
           Add Contact
         </button>
       </form>
