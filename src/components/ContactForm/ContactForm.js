@@ -1,77 +1,76 @@
-import React, { Component } from 'react';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
 import shortid from 'shortid';
+
 import './ContactForm.scss';
 
-class ContactForm extends Component {
-  state = {
-    name: '',
-    number: '',
+const validationSchema = Yup.object().shape({
+  name: Yup.string()
+    .required('Name is required')
+    .matches(/^[a-zA-Zа-яА-ЯІіЇїҐґ' \-\u0400-\u04FF]+$/, 'Invalid characters'),
+  number: Yup.string()
+    .required('Number is required')
+    .matches(
+      /^\d{3}-\d{2}-\d{2}$/,
+      'Invalid phone number. Please use the format 111-11-11'
+    ),
+});
+
+const initialValues = {
+  name: '',
+  number: '',
+};
+
+const ContactForm = ({ onAddContact }) => {
+  const handleSubmit = (values, { resetForm }) => {
+    const newContact = {
+      id: shortid.generate(),
+      name: values.name,
+      number: values.number,
+    };
+    onAddContact(newContact);
+    resetForm();
   };
 
-  handleChange = event => {
-    const { name, value } = event.currentTarget;
-    this.setState({ [name]: value });
-  };
-
-  handleSubmit = event => {
-    event.preventDefault();
-
-    if (this.state.name.trim() !== '') {
-      const newContact = {
-        id: shortid.generate(),
-        name: this.state.name,
-        number: this.state.number,
-      };
-
-      this.props.onAddContact(newContact);
-
-      this.setState({ name: '', number: '' });
-    }
-  };
-
-  // reset = () => {
-  //   this.setState({ name: '', number: '' });
-  // };
-
-  render() {
-    return (
-      <form onSubmit={this.handleSubmit} className="Form__container">
+  return (
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={handleSubmit}
+    >
+      <Form className="Form__container">
         <label htmlFor="nameId" className="Form__label">
           Name
         </label>
-        <input
+        <Field
           className="Form__input"
           type="text"
+          placeholder="Jon Doe"
           name="name"
           id="nameId"
-          pattern="^[a-zA-Zа-яА-ЯІіЇїҐґ' \-\u0400-\u04FF]+$"
-          title="Name may contain only letters, apostrophe, dash and spaces."
           required
-          value={this.state.name}
-          onChange={this.handleChange}
         />
+        <ErrorMessage name="name" component="div" className="Error" />
 
         <label htmlFor="numberId" className="Form__label">
           Number
         </label>
-        <input
+        <Field
           className="Form__input"
           type="tel"
+          placeholder="123-45-67"
           name="number"
           id="numberId"
-          pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-          title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
           required
-          value={this.state.number}
-          onChange={this.handleChange}
         />
+        <ErrorMessage name="number" component="div" className="Error" />
 
         <button type="submit" className="AddContact__btn">
           Add Contact
         </button>
-      </form>
-    );
-  }
-}
+      </Form>
+    </Formik>
+  );
+};
 
 export default ContactForm;
